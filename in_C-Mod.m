@@ -1,4 +1,5 @@
-% The parameters in this input file are gained from <Tokamaks>(4th edition) Page.598
+% This script is the input file for Alcator C-Mod
+% The parameters are gained from <Tokamaks>(4th edition) Page.598
 
 
 clear all; close all
@@ -17,23 +18,30 @@ analyse = 0;
 
 
 %  Basic parameters
-Tref = 90;  % initial temperature at r = 0 in eV
+Tref = 90;  % initial temperature at left boundary in eV
 denref = 1.4e14;  %initial density at r = 0 in cm^-3
-B0 = 53000;  %  Bz in Gauss
-mu = 40;  %  ion mass over proton mass. mu_argon=40
-Rho = 7;  %  a in cm
-rdif = 5.5;  %  dif_in for r < rdif, dif_out for r > rdif
-nzdif = 3;  %  difz_out for the first and last nzdif grids in z direction, and difz_in for the inner ones
-rfpow = 7e-2;  %  total rf power input in kW
+B0 = 53000;  %  Background Toroidal B in Gauss, ranges from 2.6 to 8.0T
+mu = 2;  %  Ion mass over proton mass. Deuterium plasmas with hydrogen minority.
+a = 22;  %  Minor radius 0.22m
+R = 68;  %  Major radius 0.68m
+rfpow = 6e-3;  %  total rf power input in kW
 densrc = 0;  %  ionization rate per cm in z direction in cm^-1s^-1
 
 %  Sizes
-alx = 17;  %  simulation area x width in cm
-aly = 17;
-alz = 270;  %  simulation area z width in cm
-dx = 0.15;  %  x grid size in gyroradius
-dy = 0.15;
+% The x of the simulation area has a range of
+% [-close_flux_region_width, SOL_width]cm
+close_flux_region_width = 5; 
+SOL_width = 3;
+% The y of the simulation area has a range of
+% [-y_max, y_max]rho_s
+y_max = 2;
+nx = 50;  % x grid number
+ny = 50;
+nz = 30;
 nz = 15;  %  grid count in z direction
+
+
+
 intdenpdst = 3;  %  initial density max gradient position in cm
 intdenwdth = 1;  %  initial density width in cm
 intpepdst = 3;  %  initial temperature max gradient position in cm
