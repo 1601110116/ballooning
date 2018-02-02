@@ -20,11 +20,10 @@
 %  vEy: EXB velocity in \theta direction
 %  all these 11 quantities are saved in dat****.mat normalized
 
-global limiter_place dt nt_per_diagnose nx ny nz inv_nustar savedata visual ...
-    make_movie analyse
+global limiter_place dt nt_per_diagnose
 
 %  the path of the case
-case_path = '/home/ylang/Documents/Research/L-H transition/ballooning';
+case_path = '/home/ylang/Documents/Research/L-H transition/balloonning';
 code_path = [case_path,'/code'];
 addpath(code_path);
 
@@ -61,11 +60,12 @@ inv_aspect_ratio = 0.3;
 q = 3;  % Safty factor 
 minor_radius = 200; % in rho_s
 
+
 %  Grid  (Grids to implement boundary conditions are not included)
 % define x=r-r0, y=r0(\theta-\theta0);
 % the x of the simulation area has a range of 
 % [-close_flux_region_width, SOL width]rho_s
-closed_flux_region_width = 39.84;
+close_flux_region_width = 39.84;
 SOL_width = 35.16;
 % the y of the simulation area has a range of
 % [-y_max, y_max]rho_s
@@ -91,7 +91,7 @@ dif_mode = 1;
 % uniform
 
 % Gaussian
-
+%  'magnitede' times the norm pdf with the standard deviation of 'width'
 % tanh
 
 % perpendicular diffusion coefficient in rho_s^2/(a/cs0)
@@ -134,8 +134,8 @@ source_mode = 1;
 
 % tanh
 
-src_p_magnitude = 0;
-src_p_width = 0;
+src_p_magnitude = 0;  % in T0n0*rho_s/t0
+src_p_width = 0;  % in rho_s
 src_pe_magnitude = 0;
 src_pe_width = 0;
 src_den_magnitude = 0;

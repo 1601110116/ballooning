@@ -1,0 +1,765 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Simulation Equations for L-H transition
+\end_layout
+
+\begin_layout Author
+ylang
+\end_layout
+
+\begin_layout Abstract
+In this article I give the equations we are using in the L-H transition
+ simulation.
+\end_layout
+
+\begin_layout Section
+Turbulence Specification
+\end_layout
+
+\begin_layout Standard
+Our whole simulation area is on a very dangerous 
+\begin_inset Formula $q=3$
+\end_inset
+
+ rational surface, where instabilities are easy to grow.
+ For tokamaks, we have good curvature on average, so that we don't need
+ to worry about global interchange instabilities.
+ MHD kink modes arise from the term
+\begin_inset Formula $\frac{1}{2}\int\mathrm{d}\boldsymbol{x}\left[J_{0\parallel}/c\hat{b}\cdot\left(\xi_{\perp}^{*}\times\boldsymbol{B}_{1\perp}\right)\right]$
+\end_inset
+
+ in the energy integral, which is rigorously zero in our electrostatic model.
+ Tearing modes are also electromagnetic.
+ Up to now we can see that the above instabilities won't occur even though
+ we have no magnetic shear, which enables us to grow micro-instabilities.
+ But unfortunately, micro-instabilities grow much slower than global interchange
+ instabilities, and are much weaker.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Screenshot from 2017-08-20 15-04-05.png
+	scale 40
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename Screenshot from 2017-08-20 15-04-43.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The two pictures above show that our model is adequate to ITG simulation.
+ They further gives that our turbulence spacial scale is a few gyro-radii,
+ and the possible ways for us to realize L-H transition are enhancing 
+\begin_inset Formula $\boldsymbol{E}\times\boldsymbol{B}$
+\end_inset
+
+ shear flow and inducing Shafranov shift as Drake did
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Simulation Equations
+\end_layout
+
+\begin_layout Itemize
+According to 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+
+\end_inset
+
+, to simulate ballooning modes, we have to separate 
+\begin_inset Formula $n$
+\end_inset
+
+ from 
+\begin_inset Formula $p$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+We advance 
+\begin_inset Formula $\ln p_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $\ln p_{e}$
+\end_inset
+
+ and 
+\begin_inset Formula $\ln n$
+\end_inset
+
+ instead of 
+\begin_inset Formula $p_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $p_{e}$
+\end_inset
+
+ and 
+\begin_inset Formula $n$
+\end_inset
+
+, so that they are more accurately solved when they are small.
+\end_layout
+
+\begin_layout Itemize
+In this section I give the simulation equations without the constant-n assumptio
+n.
+\end_layout
+
+\begin_layout Itemize
+I don't write source and dissipation terms for convenience.
+\end_layout
+
+\begin_layout Subsection
+Continuity Equation
+\end_layout
+
+\begin_layout Standard
+The electron continuity equation is
+\begin_inset Formula 
+\begin{equation}
+\partial_{t}n+\nabla\cdot\left[n\left(\boldsymbol{v}_{E}+\boldsymbol{v}_{de}+\boldsymbol{v}_{\parallel e}\right)\right]=0
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\left(\partial_{t}+\boldsymbol{v}_{E}\cdot\nabla\right)n=-n\nabla\cdot\boldsymbol{v}_{E}-\nabla\cdot\left(n\boldsymbol{v}_{de}\right)-\nabla_{\parallel}\left(nv_{\parallel e}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Under our normalization, 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}t}n=\hat{C}p_{e}-n\hat{C}\phi-\nabla_{\parallel}\left(nv_{\parallel e}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula 
+\begin{equation}
+\mathrm{d}_{t}n=\partial_{t}n+\frac{a}{\rho_{s}}\boldsymbol{v}_{E}\cdot\nabla n=\partial_{t}n+\frac{a}{\rho_{s}}\left[\phi,n\right]
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\hat{C}=-2\frac{a}{R_{0}}\left[\left(\cos\theta+\theta\hat{s}\sin\theta\right)\frac{\partial}{\partial y}+\sin\theta\frac{\partial}{\partial x}\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+i.e.
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{e}^{\ln n}\frac{\mathrm{d}}{\mathrm{d}t}\ln n & = & \mathrm{e}^{\ln p_{e}}\hat{C}\ln p_{e}-\mathrm{e}^{\ln n}\hat{C}\phi-v_{\parallel e}\mathrm{e}^{\ln n}\nabla_{\parallel}\ln n-\mathrm{e}^{\ln n}\nabla_{\parallel}v_{\parallel e}\\
+\frac{\mathrm{d}}{\mathrm{d}t}\ln n & = & T_{e}\hat{C}\ln p_{e}-\hat{C}\phi-v_{\parallel e}\nabla_{\parallel}\ln n-\nabla_{\parallel}v_{\parallel e}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and 
+\begin_inset Formula $v_{\parallel e}$
+\end_inset
+
+ is obtained by
+\begin_inset Formula 
+\begin{equation}
+j_{\parallel}=n\left(v_{\parallel i}-v_{\parallel e}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Ion Pressure Equation
+\end_layout
+
+\begin_layout Standard
+Under our approximation, the original ion pressure equation given by Zeiler
+ was
+\begin_inset Formula 
+\begin{equation}
+\frac{3}{2}\left(\partial_{t}+\boldsymbol{v}_{E}\cdot\nabla+\boldsymbol{v}_{\parallel i}\cdot\nabla\right)p_{i}+\frac{5}{2}p_{i}\nabla\cdot\left(\boldsymbol{v}_{E}+\boldsymbol{v}_{\parallel i}\right)=0
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is, under our normalization,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}t}p_{i}=-\frac{5}{3}p_{i}\hat{C}\phi-\frac{5}{3}p_{i}\nabla_{\parallel}v_{\parallel i}-v_{\parallel i}\nabla_{\parallel}p_{i}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+i.e.
+\begin_inset Formula 
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}t}\ln p_{i}=-\frac{5}{3}\left(\hat{C}\phi+\nabla_{\parallel}v_{\parallel i}\right)-v_{\parallel i}\nabla_{\parallel}\ln p_{i}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Electron Pressure Equation
+\end_layout
+
+\begin_layout Standard
+Under our approximation, the original electron pressure equation given by
+ Zeiler was
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{3}{2}\left(\partial_{t}+\boldsymbol{v}_{E}\cdot\nabla+\boldsymbol{v}_{\parallel e}\cdot\nabla\right)p_{e}+\frac{5}{2}p_{e}\nabla\cdot\left(\boldsymbol{v}_{E}+\boldsymbol{v}_{\parallel e}\right)=0
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is, under our normalization,
+\begin_inset Formula 
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}t}p_{e}=-\frac{5}{3}p_{e}\hat{C}\phi-\frac{5}{3}p_{e}\nabla_{\parallel}v_{\parallel e}-v_{\parallel e}\nabla_{\parallel}p_{e}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+i.e.
+\begin_inset Formula 
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}t}\ln p_{e}=-\frac{5}{3}\left(\hat{C}\phi+\nabla_{\parallel}v_{\parallel e}\right)-v_{\parallel e}\nabla_{\parallel}\ln p_{e}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Vorticity Equation
+\end_layout
+
+\begin_layout Standard
+The vorticity equation is also the current continuity equation
+\begin_inset Formula 
+\begin{equation}
+\nabla\cdot\boldsymbol{j}_{pol}+\nabla\cdot\boldsymbol{j}_{d}+\nabla_{\parallel}j_{\parallel}=0
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with
+\begin_inset Formula 
+\begin{equation}
+\boldsymbol{j}_{pol}=\frac{enc}{B\Omega_{i}}\left(\frac{\mathrm{d}}{\mathrm{d}t}+v_{\parallel i}\nabla_{\parallel}\right)\left(-\nabla_{\perp}\phi-\frac{\nabla_{\perp}p_{i}}{en}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+from which we can get the normalized vorticity equation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\nabla_{\perp}\cdot\left[n\left(\frac{\mathrm{d}}{\mathrm{d}t}+v_{\parallel i}\nabla_{\parallel}\right)\left(\nabla_{\perp}\phi+\frac{\nabla_{\perp}p_{i}}{n}\right)\right]=\hat{C}\left(p_{i}+p_{e}\right)+\nabla_{\parallel}j_{\parallel}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+just for simplicity, it is reduced to
+\begin_inset Formula 
+\[
+\mathrm{d}_{t}\nabla_{\perp}^{2}\left(n\phi+p_{i}\right)=\hat{C}\left(p_{i}+p_{e}\right)+\nabla_{\parallel}j_{\parallel}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We define the vorticity as
+\begin_inset Formula 
+\begin{equation}
+w=\nabla_{\perp}\cdot\left[\frac{c}{eB\Omega_{i}}\left(e\nabla_{\perp}n\phi+\nabla_{\perp}p_{i}\right)\right]
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So that the normalized vorticity equation can be expressed as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}t}w=\hat{C}\left(p_{i}+p_{e}\right)+\nabla_{\parallel}j_{\parallel}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Ion Parallel Momentum Equation
+\end_layout
+
+\begin_layout Standard
+The ion momentum equation given by Zeiler is 
+\begin_inset Formula 
+\begin{equation}
+m_{i}n\left(\partial_{t}+\boldsymbol{v}_{E}\cdot\nabla+\boldsymbol{v}_{\parallel i}\cdot\nabla\right)v_{\parallel i}=-\nabla_{\parallel}\left(p_{i}+p_{e}\right)-p_{i}\nabla\times\frac{\boldsymbol{b}}{\omega_{ci}}\cdot\nabla v_{\parallel i}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus, our normalized ion momentum equation should be
+\begin_inset Formula 
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}t}v_{\parallel i}=-\frac{1}{n}\nabla_{\parallel}\left(p_{i}+p_{e}\right)-v_{\parallel i}\nabla_{\parallel}v_{\parallel i}-\frac{p_{i}}{n}\hat{C}v_{\parallel i}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Ohm's Law
+\end_layout
+
+\begin_layout Standard
+The electron momentum equation given by Zeiler is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+0=-\nabla p_{e}-en\left[\boldsymbol{E}+\frac{1}{c}\boldsymbol{v}_{e}\times\boldsymbol{B}\right]+\boldsymbol{R}_{ei}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula 
+\begin{equation}
+R_{ei\parallel}=\left(ne\eta_{\parallel}j_{\parallel}-0.71n\nabla_{\parallel}T_{e}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Spitzer resistivity
+\begin_inset Formula 
+\begin{equation}
+\eta_{\parallel}=\frac{m_{e}\nu_{e}}{ne^{2}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So that the parallel component of the electron momentum equation gives our
+ Ohm's law
+\begin_inset Formula 
+\begin{equation}
+\frac{m_{e}}{e}\nu_{e}j_{\parallel}=\nabla_{\parallel}p_{e}-ne\nabla_{\parallel}\phi
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula 
+\begin{equation}
+\nu_{e}=2.906\times10^{-6}\ln\Lambda\frac{n}{\mathrm{cm^{-3}}}\left(\frac{T_{e}}{\mathrm{eV}}\right)^{-3/2}\mathrm{Hz}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\ln\Lambda=22.36+\frac{3}{2}\ln\frac{T_{e}}{\mathrm{eV}}-\frac{1}{2}\ln\frac{n}{\mathrm{cm^{-3}}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+in our simulation, we normalize 
+\begin_inset Formula $\nu_{e}$
+\end_inset
+
+ to 
+\begin_inset Formula $1/t_{0}$
+\end_inset
+
+, 
+\begin_inset Formula $j_{\parallel}$
+\end_inset
+
+ to 
+\begin_inset Formula $en_{0}c_{s0}$
+\end_inset
+
+.
+ The normalized Ohm's law is
+\begin_inset Formula 
+\begin{equation}
+j_{\parallel}=\frac{1}{\nu_{e}}\frac{m_{i}}{m_{e}}\left(\nabla_{\parallel}p_{e}-n\nabla_{\parallel}\phi\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Conclusion
+\end_layout
+
+\begin_layout Standard
+The gathering all simulation equations, we have the time-advancing equations
+\begin_inset Formula 
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}\ln n=T_{e}\hat{C}\ln p_{e}-\hat{C}\phi-v_{\parallel e}\nabla_{\parallel}\ln n-\nabla_{\parallel}v_{\parallel e}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}\ln p_{i}=-\frac{5}{3}\left(\hat{C}\phi+\nabla_{\parallel}v_{\parallel i}\right)-v_{\parallel i}\nabla_{\parallel}\ln p_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}\ln p_{e}=-\frac{5}{3}\left(\hat{C}\phi+\nabla_{\parallel}v_{\parallel e}\right)-v_{\parallel e}\nabla_{\parallel}\ln p_{e}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}w=\hat{C}\left(p_{i}+p_{e}\right)+\nabla_{\parallel}j_{\parallel}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}v_{\parallel i}=-\frac{1}{n}\nabla_{\parallel}\left(p_{i}+p_{e}\right)-\frac{p_{i}}{n}\hat{C}v_{\parallel i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and the relations
+\begin_inset Formula 
+\[
+w=\nabla_{\perp}^{2}\left(n\phi+p_{i}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+j_{\parallel}=\frac{1}{\nu_{e}}\frac{m_{i}}{m_{e}}\left(\nabla_{\parallel}p_{e}-n\nabla_{\parallel}\phi\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+v_{\parallel e}=v_{\parallel i}-\frac{j_{\parallel}}{n}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sheath Boundary Condition
+\end_layout
+
+\begin_layout Standard
+According to Bohm's sheath theory,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+j_{\parallel} & = & j_{si}-j_{e}=en_{e}c_{s}\mathrm{e}^{-1/2}\left[1-\exp\left(\frac{1}{2}\left(1+\ln\frac{m_{i}}{2\pi m_{e}}\right)+\frac{e\left(V-\phi_{p}\right)}{T_{e}}\right)\right]\\
+ & \approx & enc_{s}\mathrm{e}^{-1/2}\left[1-\exp\left(3+\frac{e\left(V-\phi_{p}\right)}{T_{e}}\right)\right]
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $j_{si}$
+\end_inset
+
+ is saturated ion current, 
+\begin_inset Formula $V$
+\end_inset
+
+ is the electric potential of the ideal conductor, 
+\begin_inset Formula $\phi_{p}$
+\end_inset
+
+ is the potential just inside the sheath.
+\end_layout
+
+\begin_layout Section
+Energy Transfer Rules
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Drake J F, Lau Y T, Guzdar P N, et al.
+ Local negative shear and the formation of transport barriers[J].
+ Physical review letters, 1996, 77(3): 494.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+M.Francisquez, B.Zhu and B.N.Rogers, Nucl.
+ Fusion 57, 116049 (2017)
+\end_layout
+
+\end_body
+\end_document

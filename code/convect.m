@@ -1,0 +1,16 @@
+function h = convect(g)
+% This function calculates the curvature operator applied on g
+%  the resulting term h excludes boundaries
+global vEx vEy convxdt convydt
+% h=\nabla\cdot\left(g\boldsymbol{v}_{E}\right)
+h = convxdt .* (vEx(3:end, 2:end-1, 2:end-1) .* g(3:end, 2:end-1, 2:end-1) ...
+	- vEx(1:end-2, 2:end-1, 2:end-1) .* g(1:end-2, 2:end-1, 2:end-1)) ...
+	+ convydt .* (vEy(2:end-1, 3:end, 2:end-1) .* g(2:end-1, 3:end, 2:end-1) ...
+	- vEy(2:end-1, 1:end-2, 2:end-1) .* g(2:end-1, 1:end-2, 2:end-1));
+
+
+% this may be further optimized to
+% h=\boldsymbol{v}_{E}\cdot\nabla g
+%h = convxdt .* vEx(2:end-1, 2:end-1, 2:end-1) .* (g(3:end-2, 2:end-1, 2:end-1) ...
+%	- g(1:end-2, 2:end-1, 2:end-1)) + convydt .* vEy(2:end-1, 2:end-1, 2:end-1) ...
+%	.* (g(2:end-1, 3:end, 2:end-1) - g(2:end-1, 1:end-2, 2:end-1));

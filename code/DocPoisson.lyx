@@ -1,0 +1,311 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Documentation of the Poisson solver
+\end_layout
+
+\begin_layout Standard
+The Poisson equation is solved by directly solving a linear equation set
+ for each z-plane.
+\begin_inset Formula 
+\[
+\nabla_{\perp}^{2}\left(n\phi+p_{i}\right)=w
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let's take one of the z-planes for example.
+\end_layout
+
+\begin_layout Standard
+We first implement fft to 
+\begin_inset Formula $w$
+\end_inset
+
+ in 
+\begin_inset Formula $y$
+\end_inset
+
+ direction to get
+\begin_inset Formula 
+\[
+\left(\begin{array}{cccc}
+w_{x_{1}ky_{1}} & w_{x_{1}ky_{2}} & \cdots & w_{x_{1}ky_{ny}}\\
+w_{x_{2}ky_{1}} & w_{x_{2}ky_{2}} & \cdots & w_{x_{2}ky_{ny}}\\
+\vdots & \vdots & \ddots & \vdots\\
+w_{x_{nx}ky_{1}} & w_{x_{nx}ky_{2}} & \cdots & w_{x_{nx}ky_{ny}}
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+then reshape it into
+\begin_inset Formula 
+\[
+\left(\begin{array}{c}
+W_{ky_{1}}\\
+W_{ky_{2}}\\
+\vdots\\
+W_{ky_{ny}}
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula 
+\[
+W_{ky_{i}}=\left(\begin{array}{c}
+w_{x_{1}ky_{i}}\\
+w_{x_{2}ky_{i}}\\
+\vdots\\
+w_{x_{n}ky_{i}}
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the variable 
+\family typewriter
+nphi_plus_p
+\family default
+ is used to denote 
+\begin_inset Formula $\phi+p_{i}$
+\end_inset
+
+, 
+\family typewriter
+lap
+\family default
+ to denote the Laplacian operator casted to matrix.
+ So that the linear equation set can be expressed here as
+\begin_inset Formula 
+\[
+\left(\begin{array}{cccc}
+Lap_{ky_{1}}\\
+ & Lap_{ky_{2}}\\
+ &  & \ddots\\
+ &  &  & Lap_{ky_{ny}}
+\end{array}\right)\left(\begin{array}{c}
+Nphi\_plus\_p_{ky_{1}}\\
+Nphi\_plus\_p_{ky_{2}}\\
+\vdots\\
+Nphi\_plus\_p_{ky_{ny}}
+\end{array}\right)=\left(\begin{array}{c}
+W_{ky_{1}}\\
+W_{ky_{2}}\\
+\vdots\\
+W_{ky_{ny}}
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Laplacian is given by
+\begin_inset Formula 
+\begin{eqnarray*}
+\nabla_{\perp}^{2} & = & \left(\frac{\partial}{\partial x}+\theta\hat{s}\frac{\partial}{\partial y}\right)^{2}+\frac{\partial^{2}}{\partial y^{2}}\\
+ & = & \frac{\partial^{2}}{\partial x^{2}}+\theta\hat{s}\frac{\partial}{\partial x}\frac{\partial}{\partial y}+\frac{\partial^{2}}{\partial y^{2}}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+after the y-direction fft, the Laplacian goes to
+\begin_inset Formula 
+\[
+\nabla_{\perp}^{2}=\frac{\partial^{2}}{\partial x^{2}}+\theta\hat{s}\mathrm{i}k_{y}\frac{\partial}{\partial x}-\left(1+\left(\theta\hat{s}\right)^{2}\right)k_{y}^{2}\equiv lap1+lap2+lap3
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this program we use 
+\begin_inset Formula $\phi=0$
+\end_inset
+
+ at the right boundary and floating boundary condition at the left boundary.
+ 
+\end_layout
+
+\begin_layout Standard
+For a given z-plane, 
+\begin_inset Formula $\theta\hat{s}$
+\end_inset
+
+ is constant.
+ 
+\begin_inset Formula $k_{y}$
+\end_inset
+
+ is known once the gird is given.
+ For a given 
+\begin_inset Formula $k_{y}$
+\end_inset
+
+, we have
+\begin_inset Formula 
+\[
+Lap_{ky_{i}}=\frac{1}{\Delta x^{2}}\left(\begin{array}{ccccc}
+-1 & 1\\
+1 & -2 & 1\\
+ & 1 & -2 & \ddots\\
+ &  & \ddots & \ddots & 1\\
+ &  &  & 1 & -2
+\end{array}\right)+\frac{\theta\hat{s}}{2\Delta x}iky_{i}\left(\begin{array}{ccccc}
+-1 & 1\\
+-1 & 0 & 1\\
+ & -1 & 0 & \ddots\\
+ &  & \ddots & \ddots & 1\\
+ &  &  & -1 & 0
+\end{array}\right)-\left(1+\left(\theta\hat{s}\right)^{2}\right)ky_{i}^{2}\left(\begin{array}{ccccc}
+1\\
+ & 1\\
+ &  & 1\\
+ &  &  & 1\\
+ &  &  &  & 1
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+together with
+\begin_inset Formula 
+\[
+Lap_{ky_{i}}\left(\begin{array}{c}
+nphi\_plus\_p_{x_{1}ky_{i}}\\
+nphi\_plus\_p_{x_{2}ky_{i}}\\
+\vdots\\
+nphi\_plus\_p_{x_{nx-1}ky_{i}}\\
+nphi\_plus\_p_{x_{nx}ky_{i}}
+\end{array}\right)=\left(\begin{array}{c}
+w_{x_{1}ky_{i}}\\
+w_{x_{2}ky_{i}}\\
+\vdots\\
+w_{x_{nx-1}ky_{i}}\\
+\left(w_{x_{nx}}-\frac{1}{\Delta x^{2}}p_{right}\right)_{ky_{i}}
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p_{right}$
+\end_inset
+
+ is 
+\begin_inset Formula $p$
+\end_inset
+
+ at the right boundary, fetched at runtime.
+\end_layout
+
+\end_body
+\end_document
